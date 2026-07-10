@@ -1,6 +1,7 @@
 # ------------------------ Importaciones
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 # ------------------------ Fin de las Importaciones
 
@@ -38,3 +39,22 @@ region2.isnull().sum()
 # 2. Entrena y prueba el modelo para cada región en geo_data_0.csv:
     # Divide los datos en un conjunto de entrenamiento y un conjunto de validación en una proporción de 75:25
 
+"""se opta por juntar todo en uno mismo para no repetir todo 3 veces"""
+
+regiones = [("region0", region0), ("region1", region1), ("region2", region2)]
+ 
+for nombre, data in regiones:
+    print(nombre)
+    print(data.head())
+    print(data.info())
+    print("nulos:", data.isna().sum().sum())
+    print("filas duplicadas completas:", data.duplicated().sum())
+    print("ids repetidos:", data["id"].duplicated().sum())
+    print()
+    
+def entrenar_modelo(data):
+    features = data.drop(["id", "product"], axis=1)
+    #se quita ya que son mas claves de identificacion y no aporta al entrenamiento
+    target = data["product"]
+    features_train, features_valid, target_train, target_valid = train_test_split(features, target, test_size=0.25, random_state=12345)
+    
