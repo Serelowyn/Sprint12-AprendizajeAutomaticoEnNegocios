@@ -4,6 +4,7 @@ import pandas as pd
 
 # ------------------------ Fin de las Importaciones
 
+# 1. Descarga y prepara los datos. Explica el procedimiento.
 #para la entrega en tripleten
 #region0 = pd.read_csv("/datasets/geo_data_0.csv")
 #region1 = pd.read_csv("/datasets/geo_data_1.csv")
@@ -12,3 +13,6 @@ import pandas as pd
 region0 = pd.read_csv(r"C:\Users\sasor\Desktop\Tripleten\Sprint 12\Proyecto\geo_data_0.csv")
 region1 = pd.read_csv(r"C:\Users\sasor\Desktop\Tripleten\Sprint 12\Proyecto\geo_data_1.csv")
 region2 = pd.read_csv(r"C:\Users\sasor\Desktop\Tripleten\Sprint 12\Proyecto\geo_data_2.csv")
+
+"""se usa la libreria pandas para pooder usar read_csv y poder tener la base de cada uno de los dfs para trabajar con ellos"""
+
