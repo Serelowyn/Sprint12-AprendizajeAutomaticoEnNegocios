@@ -80,3 +80,23 @@ for nombre, data in regiones:
 #
     # Analiza los resultados.
 """los resultados por region indican que la r1 tiene el rmse mas bajo de las 3, es el mas indicado de todos ya que se equivoca menos al cambio de volumen. las reservas preduchas nos indican que igualmente la r1 es la menor de las 3, esto quiere decir que aunque sea mas facil de predecir, tambien tiene menos promedio de reservas"""
+
+# 3. Prepárate para el cálculo de ganancias:
+    #Almacena todos los valores necesarios para los cálculos en variables separadas.
+presupuesto = 100000000
+pozos_a_desarrollar = 200
+pozos_explorados = 500
+precio_por_unidad = 4500
+
+    #Dada la inversión de 100 millones por 200 pozos petrolíferos, de media un pozo petrolífero debe producir al menos un valor de 500,000 dólares en unidades para evitar pérdidas (esto es equivalente a 111.1 unidades). Compara esta cantidad con la cantidad media de reservas en cada región.
+
+punto_equilibrio = presupuesto / pozos_a_desarrollar / precio_por_unidad
+print("punto de equilibrio por pozo:", punto_equilibrio)
+ 
+for nombre, data in regiones:
+    print(nombre, "media real de reservas:", data["product"].mean())
+#    
+    #Presenta conclusiones sobre cómo preparar el paso para calcular el beneficio.
+
+"""el PE es de 111.1 unidades por pozo (111 unidades redondeado) y la reserva media real, por cada una de las regiones, es menor al PE. Por el momento podriamos decir que tenemos la seguridad de que el modelo escogera los 200 pozos que se piden, siendo los mejores resultados aquellas predicciones mas altas. Pero hasta ahora el entorno no se ve tan positivo, ya que las reservas no llegan al punto de equilibrio"""
+
