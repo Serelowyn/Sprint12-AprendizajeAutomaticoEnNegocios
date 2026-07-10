@@ -2,6 +2,8 @@
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 # ------------------------ Fin de las Importaciones
 
@@ -51,10 +53,29 @@ for nombre, data in regiones:
     print("filas duplicadas completas:", data.duplicated().sum())
     print("ids repetidos:", data["id"].duplicated().sum())
     print()
-    
+
+#Entrena el modelo y haz predicciones para el conjunto de validación.
 def entrenar_modelo(data):
     features = data.drop(["id", "product"], axis=1)
     #se quita ya que son mas claves de identificacion y no aporta al entrenamiento
     target = data["product"]
     features_train, features_valid, target_train, target_valid = train_test_split(features, target, test_size=0.25, random_state=12345)
+    #Entrena el modelo y haz predicciones para el conjunto de validación. Restriccion: solo se puede usar regresion logistica
+    modelo = LinearRegression()
+    modelo.fit(features_train, target_train) 
+    predicciones_valid = modelo.predict(features_valid)
+    predicciones_valid = pd.Series(predicciones_valid, index=target_valid.index)
+    rmse = mean_squared_error(target_valid, predicciones_valid) ** 0.5
+    print("reservas predichas:", predicciones_valid.mean())
+    print("rmse del modelo:", rmse)
+    return target_valid, predicciones_valid
+
+resultados = {}
+for nombre, data in regiones:
+    print(nombre)
+    target_valid, predicciones_valid = entrenar_modelo(data)
+    resultados[nombre] = (target_valid, predicciones_valid)
+    print()
     
+"""los resultados por region indican que la r1 tiene el rmse mas bajo de las 3, es el mas indicado de todos ya que se equivoca menos al cambio de volumen. las reservas preduchas nos indican que igualmente la r1 es la menor de las 3, esto quiere decir que aunque sea mas facil de predecir, tambien tiene menos promedio de reservas"""
+
