@@ -66,6 +66,7 @@ def entrenar_modelo(data):
     predicciones_valid = modelo.predict(features_valid)
     predicciones_valid = pd.Series(predicciones_valid, index=target_valid.index)
     rmse = mean_squared_error(target_valid, predicciones_valid) ** 0.5
+    # Muestra el volumen medio de reservas predicho y RMSE del modelo.
     print("reservas predichas:", predicciones_valid.mean())
     print("rmse del modelo:", rmse)
     return target_valid, predicciones_valid
@@ -76,6 +77,6 @@ for nombre, data in regiones:
     target_valid, predicciones_valid = entrenar_modelo(data)
     resultados[nombre] = (target_valid, predicciones_valid)
     print()
-    
+#
+    # Analiza los resultados.
 """los resultados por region indican que la r1 tiene el rmse mas bajo de las 3, es el mas indicado de todos ya que se equivoca menos al cambio de volumen. las reservas preduchas nos indican que igualmente la r1 es la menor de las 3, esto quiere decir que aunque sea mas facil de predecir, tambien tiene menos promedio de reservas"""
-
