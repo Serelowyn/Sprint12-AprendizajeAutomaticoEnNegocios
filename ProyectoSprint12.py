@@ -100,3 +100,17 @@ for nombre, data in regiones:
 
 """el PE es de 111.1 unidades por pozo (111 unidades redondeado) y la reserva media real, por cada una de las regiones, es menor al PE. Por el momento podriamos decir que tenemos la seguridad de que el modelo escogera los 200 pozos que se piden, siendo los mejores resultados aquellas predicciones mas altas. Pero hasta ahora el entorno no se ve tan positivo, ya que las reservas no llegan al punto de equilibrio"""
 
+# 4. Escribe una función para calcular la ganancia de un conjunto de pozos de petróleo seleccionados y modela las predicciones:
+
+def calcular_ganancia(target, predicciones, cantidad):
+    predicciones_ordenadas = predicciones.sort_values(ascending=False)
+    seleccionados = target[predicciones_ordenadas.index][:cantidad]
+    ingresos = seleccionados.sum() * precio_por_unidad
+    return ingresos - presupuesto
+
+for nombre in resultados:
+    target_valid, predicciones_valid = resultados[nombre]
+    ganancia = calcular_ganancia(target_valid, predicciones_valid, pozos_a_desarrollar)
+    print(nombre, "ganancia con los 200 mejores pozos:", ganancia)
+
+"""tomando en cuenta los 200 mejores pozoso hay una ganancia positiva en cada region, sienfo la r0 la mayor de todas. esta es solo una instancia del resultado que se va a calcular ya que hacen falta mas cosas antes de decidir que hare a continuacion"""
