@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
+import numpy as np
 
 # ------------------------ Fin de las Importaciones
 
@@ -114,3 +115,39 @@ for nombre in resultados:
     print(nombre, "ganancia con los 200 mejores pozos:", ganancia)
 
 """tomando en cuenta los 200 mejores pozoso hay una ganancia positiva en cada region, sienfo la r0 la mayor de todas. esta es solo una instancia del resultado que se va a calcular ya que hacen falta mas cosas antes de decidir que hare a continuacion"""
+
+# 5. Calcula riesgos y ganancias para cada región:
+
+def bootstrap_ganancia(target, predicciones):
+    valores = []
+    state = np.random.RandomState(12345)
+    for i in range(1000):
+        # simulo un estudio de 500 pozos sacando una submuestra con reemplazo
+        target_sub = target.sample(n=pozos_explorados, replace=True, random_state=state)
+        pred_sub = predicciones[target_sub.index]
+        valores.append(calcular_ganancia(target_sub, pred_sub, pozos_a_desarrollar))
+ 
+    valores = pd.Series(valores)
+    # los paso a float de python, si no quedan como np.float64 y al
+    # imprimirlos dentro de una tupla sale feo tipo "np.float64(123.45)"
+    media = float(valores.mean())
+    inferior = float(valores.quantile(0.025))
+    superior = float(valores.quantile(0.975))
+    # el riesgo de perdida es simplemente el porcentaje de veces que la
+    # ganancia dio negativa en las 1000 simulaciones
+    riesgo = float((valores < 0).mean() * 100)
+ 
+    return media, inferior, superior, riesgo
+ 
+resumen = {}
+for nombre in resultados:
+    target_valid, predicciones_valid = resultados[nombre]
+    media, inferior, superior, riesgo = bootstrap_ganancia(target_valid, predicciones_valid)
+    resumen[nombre] = (media, inferior, superior, riesgo)
+    print(nombre)
+    print("ganancia media:", media)
+    print("int. confianza  - 95%:", (inferior, superior))
+    print("riesgo de perdida:", riesgo, "%")
+    print()
+    
+"""dados los resultados de este analisis se puede comprobar que la r1 es la unica con un riesgo muy pequeño de perdida, del 1% lo que la hace la mejor opcion y la unica ya que tanto como r0 y r2 quedan descartadas; presentan un riesgo de perdida igual o mayor al 6%. Cuando se añadio el bootstrapping la r1 fue la que generaba la mayor ganancia media a comparacion de las otras y eso es otro punto a favor para dicha region. Este resultado choca con el analisis anterior donde r0 nos arrojaba una ganancia estimada mayor que cualquiera de las demas. Esto se explica desde la logica, ya que anteriormente en el paso 4 unciamente estabamos analizando una instancia, o sea, un escenario posible y particular. Con el bootstrapping estamos haciendo mas instancias y promediandolas. Se concluye que r1 es la mejor opcion entonces"""
