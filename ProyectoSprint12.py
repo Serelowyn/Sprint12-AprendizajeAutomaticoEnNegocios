@@ -122,19 +122,14 @@ def bootstrap_ganancia(target, predicciones):
     valores = []
     state = np.random.RandomState(12345)
     for i in range(1000):
-        # simulo un estudio de 500 pozos sacando una submuestra con reemplazo
         target_sub = target.sample(n=pozos_explorados, replace=True, random_state=state)
         pred_sub = predicciones[target_sub.index]
         valores.append(calcular_ganancia(target_sub, pred_sub, pozos_a_desarrollar))
  
     valores = pd.Series(valores)
-    # los paso a float de python, si no quedan como np.float64 y al
-    # imprimirlos dentro de una tupla sale feo tipo "np.float64(123.45)"
     media = float(valores.mean())
     inferior = float(valores.quantile(0.025))
     superior = float(valores.quantile(0.975))
-    # el riesgo de perdida es simplemente el porcentaje de veces que la
-    # ganancia dio negativa en las 1000 simulaciones
     riesgo = float((valores < 0).mean() * 100)
  
     return media, inferior, superior, riesgo
